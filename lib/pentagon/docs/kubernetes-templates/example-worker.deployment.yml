@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: example-worker
+  labels:
+    app: example-worker
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: example-worker
+    spec:
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: example-worker
+          imagePullPolicy: Always
+          image: quay.io/reactiveops/example-worker:latest
+          command: 
+            - bundle
+            - exec
+            - rake
+            - jobs:work
+            - --trace
+          resources:
+            limits:
+              memory: 400Mi
+            requests:
+              memory: 400Mi
+            terminationMessagePath: /dev/termination-log
+          env:
+          # configmaps
+          - name: RAILS_ENV
+            valueFrom:
+              configMapKeyRef:
+                name: my-app
+                key: rails-env
+          - name: RACK_ENV
+            valueFrom:
+              configMapKeyRef:
+                name: my-app
+                key: rack-env
+          # secrets
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: my-super-secret
+                key: database-url
+          # required for in-place redeploy
+          - name: RESTART_
+            value: ""
