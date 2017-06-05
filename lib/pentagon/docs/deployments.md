@@ -1,5 +1,11 @@
 # Deployments
 
+Deployments manage Replica Sets of pods. Deleting a Deployment will not remove the Replica Set. 
+
+For Pentagon users we suggest following [`rok8s-scripts`](https://github.com/reactiveops/rok8s-scripts) for deployments  [examples here](https://github.com/reactiveops/rok8s-scripts/tree/master/examples/production-ready/deploy). Be sure to set `revisionHistoryLimit` at minimum to prevent old Replica Sets from accumulating in Kubernetes.
+
+For more generic documentation on deployments see below.
+
 > **Do not forget to set your Kubernetes context _first_ by following the [setting-context](setting-context.md) documentation**
 
 ## tl;dr
