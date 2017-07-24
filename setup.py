@@ -28,6 +28,22 @@ except ImportError:
           "pip install setuptools).")
     sys.exit(1)
 
+def find_files(directory):
+    """Returns a list of files in a directory tree.
+
+    The names are relative to the directory name given as an argument.
+    """
+
+    result = []
+    ix = len(directory) + 1
+    for here, subdirs, files in os.walk(directory):
+        for filename in files:
+            if not filename.startswith('__init__.py'):
+                result.append(os.path.join(here, filename)[ix: ])
+    return result
+
+
+
 setup(name='pentagon',
       version=__version__,
       description='Radically simple kubernetes',
@@ -50,6 +66,8 @@ setup(name='pentagon',
       ],
       package_dir={'': 'lib'},
       packages=find_packages('lib'),
+      package_data={'pentagon.components': find_files("lib/pentagon/components") },
+      include_package_data=True,
       classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Environment :: Console',
