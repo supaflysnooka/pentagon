@@ -1,0 +1,21 @@
+FROM python:2
+
+
+RUN apt-get update -qq && \
+    apt-get install aptitude -yq  && \
+    aptitude install -yq gcc libssl-dev python-dev vim
+RUN pip install virtualenv virtualenvwrapper
+RUN useradd -ms /bin/bash example-user
+USER example-user
+ENV HOME /home/example-user
+WORKDIR /home/example-user
+COPY requirements.txt $HOME/
+RUN mkdir -pv ~/.ssh && touch ~/.ssh/id_rsa && chmod 0600 ~/.ssh/id_rsa && touch ~/.bash_profile
+RUN pip install --user -r $HOME/requirements.txt
+
+
+COPY . $HOME/pentagon/
+USER root
+RUN chown -R example-user $HOME/
+USER example-user
+RUN cd  ~/pentagon/pentagon-workstation && bash workstation_setup.sh &&  cd -
