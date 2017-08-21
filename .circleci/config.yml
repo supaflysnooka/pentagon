@@ -17,9 +17,9 @@ version: 2
 
 jobs:
   build:
-    docker:
-      - image: circleci/python:2
-    environment: ~
+    machine: true
+    environment:
+      PROJECT_NAME: pentaton-integration
     working_directory: ~/pentagon
     steps:
       - checkout
@@ -37,8 +37,22 @@ jobs:
           name: Build Docker Image
           command: |
             docker build -t pentagon .
-
       - run:
           name: Test Start Project
           command: |
-            docker run --rm pentagon pentagon start-project circleci-test
+            mkdir ${PROJECT_NAME}-infrastructure
+            docker run -v `pwd`/${PROJECT_NAME}-infrastructure:/${PROJECT_NAME}-infrastructure --rm pentagon pentagon start-project ${PROJECT_NAME} --aws-access-key ${AWS_ACCESS_KEY} --aws-secret-key ${AWS_SECRET_KEY} --aws-default-region ap-northeast-1 --aws-availability-zones="ap-northeast-1a, ap-northeast-1c" --dns-zone="integration.hillghost.com"
+            # cd ${PROJECT_NAME}
+            # source config/local/env-vars.sh
+            # pip install -r requirements.txt
+            # cd config/local/
+            # bash local-config-init
+      - run:
+          name: Install Terraform
+          command: |
+            wget https://releases.hashicorp.com/terraform/0.10.2/terraform_0.10.2_linux_amd64.zip
+
+      - run:
+
+          name: Test VPC 
+          command: |
