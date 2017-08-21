@@ -23,10 +23,15 @@ jobs:
     working_directory: ~/pentagon
     steps:
       - checkout
+      - run: 
+          name: ECR Login
+          command: |
+            eval $(aws ecr get-login --no-include-email --region ap-northeast-1)
       - run:
           name: Build Docker Image
           command: |
-            docker build -t pentagon .
+            docker pull 338430314199.dkr.ecr.ap-northeast-1.amazonaws.com/pentagon:latest || true
+            docker build --cache-from 338430314199.dkr.ecr.ap-northeast-1.amazonaws.com/pentagon:latest -t pentagon:latest .
             docker tag pentagon:latest 338430314199.dkr.ecr.ap-northeast-1.amazonaws.com/pentagon:latest
             docker tag pentagon:latest 338430314199.dkr.ecr.ap-northeast-1.amazonaws.com/pentagon:${CIRCLE_SHA1}
       - run:
@@ -40,26 +45,31 @@ jobs:
           name: Test Start Project
           command: |
             docker run \
-              -v `pwd`:~/pentagon \
-              --rm pentagon pentagon start-project ${PROJECT_NAME} \
-              --aws-access-key ${AWS_ACCESS_KEY} \
-              --aws-secret-key ${AWS_SECRET_KEY} \
-              --aws-default-region ap-northeast-1 \
+              -v `pwd`:/tmp \
+              -e PROJECT_NAME=${PROJECT_NAME} \
+              --rm pentagon \
+              pentagon start-project ${PROJECT_NAME} \
+              --aws-access-key=${AWS_ACCESS_KEY_ID} \
+              --aws-secret-key=${AWS_SECRET_ACCESS_KEY} \
+              --aws-default-region=ap-northeast-1 \
               --aws-availability-zones="ap-northeast-1a, ap-northeast-1c" \
               --dns-zone="integration.hillghost.com" \
-              --force
-            # cd ${PROJECT_NAME}
-            # source config/local/env-vars.sh
-            # pip install -r requirements.txt
-            # cd config/local/
-            # bash local-config-init
-            ls ${PROJECT_NAME}-infrastructure
-            ls
-      - run: 
-          name: ECR Login
-          command: |
-            eval $(aws ecr get-login --no-include-email --region ap-northeast-1)
-
+              --workspace-directory=/tmp
+      # - run:
+      #     name: Test VPC
+      #     command: |
+      #       docker run \
+      #         -v `pwd`:/tmp \
+      #         bash -c "
+      #           cd /tmp/
+      #         "
+      #       # cd ${PROJECT_NAME}
+      #       # source config/local/env-vars.sh
+      #       # pip install -r requirements.txt
+      #       # cd config/local/
+      #       # bash local-config-init
+      #       ls ${PROJECT_NAME}-infrastructure
+      #       ls
       - run:
           name: Push Images
           command: |
