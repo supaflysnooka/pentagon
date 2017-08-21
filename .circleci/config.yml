@@ -23,7 +23,6 @@ jobs:
     working_directory: ~/pentagon
     steps:
       - checkout
-      - setup_remote_docker
       - run:
           name: Install Pentagon
           command: |
@@ -47,12 +46,5 @@ jobs:
             # pip install -r requirements.txt
             # cd config/local/
             # bash local-config-init
-      - run:
-          name: Install Terraform
-          command: |
-            wget https://releases.hashicorp.com/terraform/0.10.2/terraform_0.10.2_linux_amd64.zip
-
-      - run:
-
-          name: Test VPC 
-          command: |
+            ls
+      
