@@ -24,18 +24,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Pentagon
-          command: |
-            sudo pip install -e .
-      - run:
-          name: Unit Tests
-          command: |
-            sudo pip install -r ${HOME}/pentagon/lib/tests/requirements.txt
-            nosetests
-      - run:
           name: Build Docker Image
           command: |
             docker build -t pentagon .
+      - run:
+          name: Unit Tests
+          command: |
+            docker run pentagon \
+              bash -c "\
+                pip install -r pentagon/lib/tests/requirements.txt && \
+                cd pentagon && nosetests"                
       - run:
           name: Test Start Project
           command: |
