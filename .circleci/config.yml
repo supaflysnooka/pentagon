@@ -19,7 +19,7 @@ jobs:
   build:
     machine: true
     environment:
-      PROJECT_NAME: pentaton-integration
+      PROJECT_NAME: pentagon-integration
     working_directory: ~/pentagon
     steps:
       - checkout
@@ -27,6 +27,8 @@ jobs:
           name: Build Docker Image
           command: |
             docker build -t pentagon .
+            docker tag pentagon:latest 338430314199.dkr.ecr.ap-northeast-1.amazonaws.com/pentagon:latest
+            docker tag pentagon:latest 338430314199.dkr.ecr.ap-northeast-1.amazonaws.com/pentagon:${CIRCLE_SHA1}
       - run:
           name: Unit Tests
           command: |
@@ -37,9 +39,8 @@ jobs:
       - run:
           name: Test Start Project
           command: |
-            mkdir ${PROJECT_NAME}-infrastructure
             docker run \
-              -v `pwd`/${PROJECT_NAME}-infrastructure:/${PROJECT_NAME}-infrastructure \
+              -v `pwd`:~/pentagon \
               --rm pentagon pentagon start-project ${PROJECT_NAME} \
               --aws-access-key ${AWS_ACCESS_KEY} \
               --aws-secret-key ${AWS_SECRET_KEY} \
@@ -54,4 +55,14 @@ jobs:
             # bash local-config-init
             ls ${PROJECT_NAME}-infrastructure
             ls
-      
+      - run: 
+          name: ECR Login
+          command: |
+            eval $(aws ecr get-login --no-include-email --region ap-northeast-1)
+
+      - run:
+          name: Push Images
+          command: |
+            docker push 338430314199.dkr.ecr.ap-northeast-1.amazonaws.com/pentagon:latest
+            docker push 338430314199.dkr.ecr.ap-northeast-1.amazonaws.com/pentagon:${CIRCLE_SHA1}
+
