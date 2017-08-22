@@ -1,0 +1,5 @@
+  - cidr: ${cidr}
+    type: ${type}
+    egress: ${egress}
+    name: ${name}
+    zone: ${zone}
