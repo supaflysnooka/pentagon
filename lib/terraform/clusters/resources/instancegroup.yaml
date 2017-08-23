@@ -1,0 +1,15 @@
+---
+
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: ${kops_cluster_name}
+  name: ${name}
+spec:
+  machineType: ${ec2_flavor}
+  maxSize: ${max_size}
+  minSize: ${min_size}
+  role: ${role}
+  subnets:
+${subnets}

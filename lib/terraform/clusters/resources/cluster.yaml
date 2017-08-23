@@ -15,12 +15,10 @@ spec:
   etcdClusters:
   - name: main
     etcdMembers:
-    - instanceGroup: ig
-      name: ig_name
+${etcdmembers}
   - name: events
     etcdMembers:
-    - instanceGroup: ig
-      name: ig_name
+${etcdmembers}
   kubernetesApiAccess:
   - 0.0.0.0/0
   kubernetesVersion: ${kubernetes_version}
@@ -41,3 +39,5 @@ ${subnet_yaml}
       type: Public
     masters: private
     nodes: private
+
+${instancegroups}

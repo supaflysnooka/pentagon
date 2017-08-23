@@ -21,3 +21,13 @@ variable "nat_gateway_ids" {
 variable "availability_zones" {
   type = "list"
 }
+
+variable "infrastructure_name" {}
+
+variable "hosted_zone_name" {}
+
+variable "vpc_id" {}
+
+variable "master_count" {}
+variable "node_count" {}
+variable "kops_state_store_bucket" {}

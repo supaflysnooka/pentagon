@@ -1,5 +1,9 @@
-  - cidr: ${cidr}
-    type: ${type}
+  - cidr: ${private_cidr}
+    type: Private
     egress: ${egress}
-    name: ${name}
+    name: ${zone}
+    zone: ${zone}
+  - cidr: ${utility_cidr}
+    type: Utility
+    name: utility-${zone}
     zone: ${zone}

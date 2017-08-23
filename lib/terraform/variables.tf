@@ -1,6 +1,18 @@
+variable "infrastructure_name" {
+  type = "string"
+}
+
 variable "cluster_names" {
   type = "list"
   default = ["working-1", "production-1"]
+}
+
+variable "master_count" {
+  default = "3"
+}
+
+variable "node_count" {
+  default = "3"
 }
 
 ###
@@ -25,8 +37,6 @@ variable "aws_hosted_zone_name" {}
 variable "vpc_cidr" {
   default = "172.20"
 }
-
-variable "aws_vpc_name" {}
 
 variable "admin_subnet_bits" {
   default = 7
