@@ -23,6 +23,7 @@ module "vpc" {
 module "clusters" {
   source                  = "./clusters"
 
+  clusters_path           = "${template_dir.project_config.destination_dir}/vpc/${var.infrastructure_name}/clusters"
   cluster_names           = "${var.cluster_names}"
   cluster_subnets         = "${data.null_data_source.cluster_subnet.*.outputs.cidr}"
   cluster_subnet_bits     = "${var.k8s_subnet_bits}"
@@ -41,10 +42,14 @@ module "clusters" {
 resource "aws_s3_bucket" "kops_state_store" {
   bucket = "${var.infrastructure_name}-kops"
   acl    = "private"
+
+  versioning {
+    enabled = true
+  }
 }
 
 // terraform backend config
 
-# terraform {
-#  backend "s3" {}
-# }
+terraform {
+  backend "s3" {}
+}

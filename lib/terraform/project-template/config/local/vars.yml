@@ -1,0 +1,4 @@
+vpc_tag_name: "${vpc_name}"
+canonical_zone: "${dns_zone}"
+vpn_bucket: "${vpc_name}-vpn"
+secrets_bucket: "${vpc_name}-secrets"

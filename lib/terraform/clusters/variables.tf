@@ -13,6 +13,7 @@ variable "cluster_subnets" {
 variable "cluster_names" {
   type = "list"
 }
+variable "clusters_path" {}
 
 variable "nat_gateway_ids" {
   type = "list"

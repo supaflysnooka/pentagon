@@ -1,21 +1,25 @@
-.PHONY: all bucket plan apply destroy clean
+.PHONY: all init plan apply destroy clean
 
-all: bucket plan apply
+all: plan apply
 
-bucket:
-	aws s3 ls s3://$${INFRASTRUCTURE_BUCKET} \
-	|| aws s3 mb s3://$${INFRASTRUCTURE_BUCKET} \
-        &&  aws s3api put-bucket-versioning \
-	 --bucket $${INFRASTRUCTURE_BUCKET} \
-	 --versioning-configuration  \
-	Status=Enabled
+BUCKET_NAME = $(shell cat terraform.tfvars | grep infrastructure_name | awk '{print $$3}' | tr -d '"')
+
+init:
+	cd backend && terraform init; \
+	AWS_DEFAULT_REGION=us-east-1 terraform apply \
+		-state-out=backend.tfstate -var-file ../terraform.tfvars
+
+	terraform init \
+	  -backend=true \
+		-backend-config="bucket=$(BUCKET_NAME)-terraform" \
+		-backend-config="key=pentagon/tf.state" \
+		-backend-config="region=us-east-1"
 
 plan:
-	terraform init -backend=true
-	terraform plan -module-depth=-1 -var-file terraform.tfvars 
+	terraform plan -var-file terraform.tfvars
 
 apply:
-	terraform apply
+	terraform apply -var-file terraform.tfvars
 
 destroy:
 	terraform plan -destroy -var-file terraform.tfvars -out terraform.tfplan
@@ -23,5 +27,4 @@ destroy:
 
 clean:
 	rm -f terraform.tfplan
-	rm -f terraform.tfstate
 	rm -fR .terraform/

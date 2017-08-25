@@ -29,5 +29,5 @@ resource "local_file" "cluster_yaml" {
   count       = "${length(var.cluster_names)}"
 
   content     = "${element(data.template_file.cluster_yaml.*.rendered, count.index)}"
-  filename    = "/tmp/cluster-${count.index}.yaml"
+  filename    = "${var.clusters_path}/${var.cluster_names[count.index]}/cluster.yaml"
 }

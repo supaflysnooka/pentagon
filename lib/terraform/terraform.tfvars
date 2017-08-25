@@ -1,6 +1,6 @@
 
-infrastructure_name =
-aws_hosted_zone_name =
+infrastructure_name = "corey2"
+aws_hosted_zone_name = "corey2.hillghost.com"
 
 // cluster_names = ["working-1", "production-1"]
 // master_count = 3
