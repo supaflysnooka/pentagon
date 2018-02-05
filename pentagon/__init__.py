@@ -13,7 +13,6 @@ import sys
 import traceback
 
 from git import Repo, Git
-from shutil import copytree, ignore_patterns
 
 import pentagon.component.kops as kops
 import pentagon.component.inventory as inventory
