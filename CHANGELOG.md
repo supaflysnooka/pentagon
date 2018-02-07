@@ -8,8 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Added
 - `--version` flag to output version
 
+
 ### Updated
 - Version handling in setup.py
+- Updated yaml loader for config file reading to force string behavior
 
 ## [2.0.0] - 2018-2-1
 ### Added
