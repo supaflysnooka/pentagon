@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:xenial-20210114
 
 RUN apt-get update && apt-get install software-properties-common -y
 RUN apt-add-repository ppa:ansible/ansible -y && apt-get update
